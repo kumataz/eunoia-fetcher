@@ -37,7 +37,7 @@ type Config struct{
 
 
 func OpenDB() (db *sql.DB) {
-  // psql postgres://eunoiaDB:Trusme123#@!@localhost:5432/eunoiaDB
+  // psql postgres://eunoiadb:Trusme123#@!@localhost:5432/eunoiadb
   dbConn := fmt.Sprintf("postgres://%s:%s@%s", cfg.User, cfg.Passwd, cfg.DbConn)
   db, err := sql.Open("postgres", dbConn)
   if err != nil {
@@ -391,10 +391,10 @@ func pollChainBlockNumber(ec *ethclient.Client){
 
 var cfg Config = Config {
   SCCAddr: "http://127.0.0.1:8545",
-  DbConn: "localhost:5432/eunoiaDB",
+  DbConn: "localhost:5432/eunoiadb",
   Concurrent: 32,
   Schema: "eunc",
-  User: "eunoiaDB",
+  User: "eunoiadb",
   Passwd: "Trusme123#@!",
 }
 
@@ -403,9 +403,9 @@ func init() {
   //flag.IntVar       (&centerTh, "c", 3, "Center error limit, int in pixels")
   //flag.Float64Var   (&fThreshold, "t", 50.0, "Edge detection threshold, in float percentage, means the value between bright and dark mean")
   flag.StringVar   (&cfg.Schema,  "s", "eunc", "PostgreSQL database address")
-  flag.StringVar   (&cfg.User,    "U", "eunoiaDB", "PostgreSQL database address")
+  flag.StringVar   (&cfg.User,    "U", "eunoiadb", "PostgreSQL database address")
   flag.StringVar   (&cfg.Passwd,  "P", "Trusme123#@!", "PostgreSQL database address")
-  flag.StringVar   (&cfg.DbConn,  "d", "localhost:5432/eunoiaDB", "PostgreSQL database address")
+  flag.StringVar   (&cfg.DbConn,  "d", "localhost:5432/eunoiadb", "PostgreSQL database address")
   flag.StringVar   (&cfg.SCCAddr,  "r", "http://127.0.0.1:8545", "Go-ethereum RPC URl")
 }
 

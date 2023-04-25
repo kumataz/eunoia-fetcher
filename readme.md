@@ -50,15 +50,15 @@ sudo systemctl restart postgresql
 #### db create
 ```
 // sql check
-sudo -u postgres psql fabricexplorer
+sudo -u postgres psql eunoiadb
 \l
 \d
 
 // Option: eunc database and tables config
 // Create user and database
-CREATE USER eunoiaAd WITH PASSWORD 'Trusme123#@!';
-CREATE DATABASE eunoiaDB OWNER eunoiaAd;
-GRANT ALL PRIVILEGES ON DATABASE eunoiaDB TO eunoiaAd;
+CREATE USER eunoiaad WITH PASSWORD 'Trusme123#@!';
+CREATE DATABASE eunoiadb OWNER eunoiaad;
+GRANT ALL PRIVILEGES ON DATABASE eunoiadb TO eunoiaad;
 
 // Create tables: blocks and transactions
 \i eunc.sql
@@ -70,17 +70,17 @@ GRANT ALL PRIVILEGES ON DATABASE eunoiaDB TO eunoiaAd;
 ```
 
 // fetch
-$ go build fetcher.go && ./fetcher -T 32 -s eunc -d localhost:5432/eunoiaDB | tee $(date "+%Y%m%d_%H%M%S.log")
+$ go build fetcher.go && ./fetcher -T 32 -s eunc -d localhost:5432/eunoiadb | tee $(date "+%Y%m%d_%H%M%S.log")
 
 // postgresql config
-- database: eunoiaDB
-- user: eunoiaAd
+- database: eunoiadb
+- user: eunoiaad
 - password: Trusme123#@!
 - port 5432
 
 // postgresql connect by terminal
-$ psql postgres://eunoiaAd:Trusme123#@!@localhost:5432/eunoiaDB
-$ psql -U eunoiaAd -W -h localhost -d eunoiaDB -p 5432
+$ psql postgres://eunoiaad:Trusme123#@!@localhost:5432/eunoiadb
+$ psql -U eunoiaad -W -h localhost -d eunoiadb -p 5432
 
 // sql server explorer
 - http://localhost/phppgadmin/index.php
