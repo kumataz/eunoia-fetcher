@@ -13,7 +13,7 @@ CREATE TABLE eunc.blocks (
     receipts_root     VARCHAR(65535) NOT NULL,     -- The root of the receipts trie of the block
     miner             VARCHAR(65535) NOT NULL,     -- The address of the beneficiary to whom the mining rewards were given
     difficulty        NUMERIC(38, 0),              -- Integer of the difficulty for this block
-    total_difficulty  NUMERIC(38, 0),              -- Integer of the total difficulty of the chain until this block
+    -- total_difficulty  NUMERIC(38, 0),              -- Integer of the total difficulty of the chain until this block
     size              BIGINT         NOT NULL,     -- The size of this block in bytes
     extra_data        VARCHAR(65535) DEFAULT NULL, -- The extra data field of this block
     gas_limit         BIGINT         DEFAULT NULL, -- The maximum gas allowed in this block

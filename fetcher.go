@@ -23,7 +23,7 @@ var BlockNumberDB int64
 var BlockNumberChain int64
 
 type Config struct{
-  SCCAddr string
+  EuncRPC string
   DbConn string
   Concurrent int64
   Schema string
@@ -37,8 +37,9 @@ type Config struct{
 
 
 func OpenDB() (db *sql.DB) {
-  // psql postgres://eunoiadb:Trusme123#@!@localhost:5432/eunoiadb
+  // psql postgres://eunoiaad:Trusme123@localhost:5432/eunoiadb
   dbConn := fmt.Sprintf("postgres://%s:%s@%s", cfg.User, cfg.Passwd, cfg.DbConn)
+  fmt.Println(dbConn)
   db, err := sql.Open("postgres", dbConn)
   if err != nil {
     log.Fatal(err)
@@ -188,7 +189,7 @@ func getDbBlockNumber(db *sql.DB) (n int64){
 }
 
 func newSccClient() (*ethclient.Client, error) {
-  client, err := ethclient.Dial(cfg.SCCAddr)
+  client, err := ethclient.Dial(cfg.EuncRPC)
   if err != nil {
     client = nil
   }
@@ -233,7 +234,8 @@ func insertBlock(db *sql.DB, hdr *types.Header, blk *types.Block){
     fmt.Sprintf("%+02x", hdr.Extra),
     hdr.GasLimit,
     hdr.GasUsed,
-    hdr.Time.Int64(),
+    // hdr.Time.Int64(),
+    time.Now().Unix(),
     len(blk.Transactions()),
   )
   if err != nil {
@@ -279,7 +281,7 @@ func insertTx(db *sql.DB, blk *types.Block, idx int64, tx *types.Transaction){
 }
 
 func fetchWorker (db *sql.DB, ec *ethclient.Client, bn int64, guard chan struct{}){
-  lec, err := ethclient.Dial(cfg.SCCAddr) // TODO connection error
+  lec, err := ethclient.Dial(cfg.EuncRPC) // TODO connection error
 
   retries := 32
   defer lec.Close()
@@ -288,7 +290,7 @@ func fetchWorker (db *sql.DB, ec *ethclient.Client, bn int64, guard chan struct{
     fmt.Printf("Retries remain: %d, Reading Header[%d] error: %s\n", retries - i, bn, err.Error())
     lec.Close()
     time.Sleep(time.Duration(i*8) * time.Millisecond)
-    lec, _ = ethclient.Dial(cfg.SCCAddr)
+    lec, _ = ethclient.Dial(cfg.EuncRPC)
     hdr, err  = lec.HeaderByNumber(context.Background(), big.NewInt(bn))
   }
 
@@ -297,7 +299,7 @@ func fetchWorker (db *sql.DB, ec *ethclient.Client, bn int64, guard chan struct{
     fmt.Printf("Retries remain: %d, Reading Block[%d] error: %s\n", retries - i, bn, err.Error())
     lec.Close()
     time.Sleep(time.Duration(i*8) * time.Millisecond)
-    lec, _ = ethclient.Dial(cfg.SCCAddr)
+    lec, _ = ethclient.Dial(cfg.EuncRPC)
     blk, err = lec.BlockByNumber(context.Background(), big.NewInt(bn))
   }
 
@@ -390,12 +392,12 @@ func pollChainBlockNumber(ec *ethclient.Client){
 }
 
 var cfg Config = Config {
-  SCCAddr: "http://127.0.0.1:8545",
+  EuncRPC: "http://127.0.0.1:8545",
   DbConn: "localhost:5432/eunoiadb",
   Concurrent: 32,
   Schema: "eunc",
-  User: "eunoiadb",
-  Passwd: "Trusme123#@!",
+  User: "eunoiaad",
+  Passwd: "Trusme123",
 }
 
 func init() {
@@ -403,10 +405,10 @@ func init() {
   //flag.IntVar       (&centerTh, "c", 3, "Center error limit, int in pixels")
   //flag.Float64Var   (&fThreshold, "t", 50.0, "Edge detection threshold, in float percentage, means the value between bright and dark mean")
   flag.StringVar   (&cfg.Schema,  "s", "eunc", "PostgreSQL database address")
-  flag.StringVar   (&cfg.User,    "U", "eunoiadb", "PostgreSQL database address")
-  flag.StringVar   (&cfg.Passwd,  "P", "Trusme123#@!", "PostgreSQL database address")
+  flag.StringVar   (&cfg.User,    "U", "eunoiaad", "PostgreSQL database address")
+  flag.StringVar   (&cfg.Passwd,  "P", "Trusme123", "PostgreSQL database address")
   flag.StringVar   (&cfg.DbConn,  "d", "localhost:5432/eunoiadb", "PostgreSQL database address")
-  flag.StringVar   (&cfg.SCCAddr,  "r", "http://127.0.0.1:8545", "Go-ethereum RPC URl")
+  flag.StringVar   (&cfg.EuncRPC,  "r", "http://127.0.0.1:8545", "Go-ethereum RPC URl")
 }
 
 // TODO fix table if counnt  does not match last block number 

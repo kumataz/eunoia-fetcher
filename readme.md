@@ -23,7 +23,7 @@ sudo systemctl status postgresql
 
 #### Config
 
-/etc/postgresql/12/main/postgresql.conf
+sudo vim /etc/postgresql/12/main/postgresql.conf
 ```
 # - Connection Settings -
 listen_addresses='*'
